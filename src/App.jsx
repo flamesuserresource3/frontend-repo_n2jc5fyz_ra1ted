@@ -1,28 +1,44 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import Header from './components/Header';
+import RecordForm from './components/RecordForm';
+import RecordList from './components/RecordList';
+import EmptyState from './components/EmptyState';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [records, setRecords] = useState([]);
+
+  const handleAddRecord = (record) => {
+    setRecords((prev) => [
+      { id: crypto.randomUUID(), ...record },
+      ...prev,
+    ]);
+  };
+
+  const handleDeleteRecord = (id) => {
+    setRecords((prev) => prev.filter((r) => r.id !== id));
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        <Header />
+
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-2">
+            <RecordForm onAdd={handleAddRecord} />
+          </div>
+
+          <div className="lg:col-span-3">
+            {records.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <RecordList records={records} onDelete={handleDeleteRecord} />
+            )}
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
